@@ -27,6 +27,6 @@ for i in range(1, n):
 print("\nProcess\tAT\tBT\tPR\tCT\tTAT\tWT")
 for i in range(n):
     print(f"P{proc[i][3]}\t{proc[i][0]}\t{proc[i][1]}\t{proc[i][2]}\t"
-          f"1{ctime[i]}\t{tat[i]}\t{wt[i]}")
+          f"{ctime[i]}\t{tat[i]}\t{wt[i]}")
 
 
