@@ -1,0 +1,28 @@
+def scan(requests, head, direction):
+    requests.sort()
+    left = [r for r in requests if r <= head]
+    right = [r for r in requests if r > head]
+
+    seq = []
+    seek_time = 0
+    current = head
+
+    if direction == "left":
+        path = list(reversed(left)) + [0] + right
+    else:
+        path = right + [max(requests)] + list(reversed(left))
+
+    for r in path:
+        seek_time += abs(current - r)
+        seq.append(r)
+        current = r
+
+    return seek_time, seq
+n = int(input("Enter number of requests: "))
+requests = list(map(int, input("Enter request sequence: ").split()))
+head = int(input("Enter initial head position: "))
+direction = input("Enter direction (left/right): ").lower()
+
+time, seq = scan(requests, head, direction)
+print("\nSeek Sequence:", [head] + seq)
+print("Total Seek Time:", time)
