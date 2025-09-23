@@ -1,0 +1,13 @@
+n=int(input("enter num of request:"))
+requests=list(map(int,input("enter request sequence:").split()))
+head=int(input("enter initial head position:"))
+total_seek=0
+sequence=[]
+while requests:
+  closest=min(requests,key=lambda x:abs(x-head))
+  total_seek += abs(closest-head)
+  head= closest
+  sequence.append(closest)
+  requests.remove(closest)
+  print("\n seek sequence:", sequence)
+  print("total seek operations:", total_seek)
