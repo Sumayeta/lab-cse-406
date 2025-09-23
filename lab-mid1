@@ -1,0 +1,26 @@
+n=int(input("enter num of process:"))
+procs=[]
+for i in range(n):
+  pid=input(f"process id p{i+1}:")
+  at= int(input(f" at of {pid}:"))
+  bt= int(input(f" bt of {pid}:"))
+  procs.append([pid,at,bt])
+  procs.sort(key=lambda x:x[1])
+  wt,tat=[],[]
+  done, time=[], 0
+  while len(done)<n:
+    ready=[p for p in procs if p[1]<= time and p not in done]
+    if not ready:
+      time=min(p[1] for p in procs if p not in done)
+      continue
+      ready.sort(key=lambda x:x[2])
+      r=ready[0]
+      w=time-p[1]
+      t=w+p[2]
+      wt.append(w)
+      tat.append(t)
+      time+=p[2]
+      done.append(p)
+      print("\n procs\at\bt\ct\tat\wt")
+      for i,p in enumerate(done):
+          print(f"{p[0]}\t{p[1]}\t{p[2]}\t{wt[i]}\t{tat[i]}")
