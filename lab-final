@@ -1,0 +1,79 @@
+class Process:
+    def __init__(self, pid, at, bt):
+        self.pid = pid
+        self.at = at
+        self.bt = bt
+        self.remaining_bt = bt
+        self.ct = 0
+        self.tat = 0
+        self.wt = 0
+        self.is_complete = False
+        self.in_queue = False
+
+def check_new_arrivals(processes, n, current_time, ready_queue):
+    for i in range(n):
+        p = processes[i]
+        if p.at <= current_time and not p.in_queue and not p.is_complete:
+            processes[i].in_queue = True
+            ready_queue.append(i)
+
+def update_queue(processes, n, tq, ready_queue, current_time, program_execute):
+    i = ready_queue[0]
+    ready_queue.pop(0)
+
+    if processes[i].remaining_bt <= tq:
+        current_time += processes[i].remaining_bt
+        processes[i].ct = current_time
+        processes[i].tat = processes[i].ct - processes[i].at
+        processes[i].wt = processes[i].tat - processes[i].bt
+        if processes[i].wt < 0:
+            processes[i].wt = 0
+        processes[i].remaining_bt = 0
+        processes[i].is_complete = True
+        program_execute += 1
+    else:
+        processes[i].remaining_bt -= tq
+        current_time += tq
+
+    if program_execute != n:
+        check_new_arrivals(processes, n, current_time, ready_queue)
+
+    if not processes[i].is_complete:
+        ready_queue.append(i)
+
+    return current_time, ready_queue, program_execute
+
+def main():
+    n = int(input("Enter the number of processes: "))
+    tq = int(input("Enter the time quantum: "))
+    processes = []
+    for i in range(n):
+        pid = i + 1
+        at = int(input(f"Enter arrival time for process {pid}: "))
+        bt = int(input(f"Enter burst time for process {pid}: "))
+        processes.append(Process(pid, at, bt))
+
+    ready_queue = []
+    current_time = 0
+    program_execute = 0
+
+    # Sort processes by arrival time
+    processes.sort(key=lambda x: x.at)
+
+    check_new_arrivals(processes, n, current_time, ready_queue)
+
+    while program_execute != n:
+        if not ready_queue:
+            current_time += 1
+            check_new_arrivals(processes, n, current_time, ready_queue)
+            continue
+        current_time, ready_queue, program_execute = update_queue(processes, n, tq, ready_queue, current_time, program_execute)
+
+    print("\nProcess\tArrival Time\tBurst Time\tCompletion Time\tTurnaround Time\tWaiting Time")
+    total_tat = 0
+    total_wt = 0
+    for p in processes:
+        print(f"{p.pid}\t\t{p.at}\t\t{p.bt}\t\t{p.ct}\t\t{p.tat}\t\t{p.wt}")
+
+if __name__ == "__main__":
+    main()
